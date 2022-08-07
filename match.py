@@ -3,7 +3,7 @@
 
 import time
 from math import sqrt, pow, exp
-
+import random
 import tkinter as tk
 
 
@@ -13,8 +13,8 @@ def main():
     remove=0
     allFalse()
     checklist=[var_match_1, var_match_2, var_match_3, var_match_4, var_match_5, var_match_6, var_match_7, var_match_8, var_match_9, var_match_10, var_match_11, var_match_12]
-
-    mlist=matchlist()
+    studylist="studylist.txt"
+    mlist=matchinglist(studylist)
     match_creation(mlist)
 
 def allFalse():
@@ -367,14 +367,20 @@ def click12():
             allFalse()
             backgroundReset()
 
-
-
-
-
-
-
-def match_creation(mmm):
+def match_creation(matchlist):
     global blist, buttonlist
+
+    wordlist=[]
+    for i in range(6):
+        chosen=random.randint(0,len(matchlist))
+        while chosen in wordlist:
+            chosen=random.randint(0,len(matchlist))
+            if len(matchlist) < 6:
+                break
+        wordlist.append(chosen)
+    mmm=[]
+    for i in range(len(wordlist)):
+        mmm.append(matchlist[wordlist[i]])
     win = tk.Tk()
     win.geometry('1200x900')
     win.columnconfigure((0,1,2,3),weight=3)
@@ -385,6 +391,8 @@ def match_creation(mmm):
     blist=[]
     blist.append(mmm[0][0])
     pos=[[0,0],[0,1],[0,2],[0,3],[1,0],[1,1],[1,2],[1,3],[2,0],[2,1],[2,2],[2,3]]
+    random.shuffle(pos)
+    print(pos)
     buttonlist.append(tk.Button(frame,
                        height=10,
                        width=30,
@@ -505,10 +513,10 @@ def match_creation(mmm):
     win.mainloop()
 
 
-def matchlist():
+def matchinglist(list):
     newlines=[]
     matchsplitchar="!!!!!"
-    with open('testlist.txt') as file:
+    with open(f'{list}') as file:
         lines = [line.rstrip() for line in file]
 
     for stuff in lines:
