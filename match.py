@@ -5,17 +5,76 @@ import time
 from math import sqrt, pow, exp
 import random
 import tkinter as tk
+from tkinter import font as tkFont
 
+
+class rip(tk.Button):
+    def __init__(self, master=None, **kwargs):
+        self.img = tk.PhotoImage()
+        tk.Button.__init__(self, master, image=self.img, compound='center', **kwargs)
 
 def main():
-    global click, remove
+    start=time.time()
+    global click, remove, usedFONT
+    usedFONT='Arial'
     click=0
     remove=0
     allFalse()
     checklist=[var_match_1, var_match_2, var_match_3, var_match_4, var_match_5, var_match_6, var_match_7, var_match_8, var_match_9, var_match_10, var_match_11, var_match_12]
     studylist="testlist.txt"
     mlist=matchinglist(studylist)
+    setup2=time.time()
+    print("time", setup2-start, "-------------------------------------------------------------------------\n-----------------------------------------------------------------")
     match_creation(mlist)
+
+def tmain():
+    studylist="testlist.txt"
+    mlist=matchinglist(studylist)
+    #for i in range(len(mlist)):
+    #final=fontConfig(mlist[0],30)
+    text=mlist[0]
+    blocksize=30
+    win = tk.Tk()
+    screen_wid=win.winfo_screenwidth()
+    screen_height=win.winfo_screenheight()
+    print(screen_wid, screen_height)
+    ww=screen_wid//4
+    hh=screen_height-screen_height//10
+    win.geometry(f'{ww}x{hh}')
+    win.columnconfigure((0,1,2,3),weight=3)
+    win.rowconfigure((0,1,2), weight=1)
+    frame = tk.Frame(win)
+    frame.pack()
+    buttonlist=[]
+    blist=[]
+    arial36b = tkFont.Font(family='Arial', size=36, weight='bold')
+    width = arial36b.measure("How wide is this?")
+    for i in range(500):
+        arial36b = tkFont.Font(family='Arial', size=i)
+        width = arial36b.measure(mlist[0][0])
+        if width <  ww//3-ww//15:
+            wordwidth=width
+            usedSize=i
+    print(wordwidth)
+    sfonts=tkFont.Font(size=usedSize)
+
+    final=wordwidth
+    print(usedSize, final, mlist[0][0])
+    buttonlist=[]
+    buttonlist.append(rip(frame, font=sfonts, text=mlist[0][0],  fg="black",  bg='white',  command= click3,height = hh//4-hh/20,  width = ww//3-ww/15 ))
+    buttonlist[0].grid(row=2, column=2)
+    #blist.append()
+
+    win.mainloop()
+
+
+def fontConfig(text, blocksize):
+    n=340//len(text)
+    usedSize=n-20
+    if usedSize>100:
+        usedSize=100
+    print(usedSize, text, n)
+    return usedSize
 
 def allFalse():
     global var_match_1, var_match_2, var_match_3, var_match_4, var_match_5, var_match_6, var_match_7, var_match_8, var_match_9, var_match_10, var_match_11, var_match_12
@@ -31,6 +90,9 @@ def allFalse():
     var_match_10=False
     var_match_11=False
     var_match_12=False
+    varlist=[var_match_1, var_match_2, var_match_3, var_match_4, var_match_5, var_match_6, var_match_7, var_match_8, var_match_9, var_match_10, var_match_11, var_match_12]
+    #print(varlist)
+
 def backgroundReset():
     for i in range(12):
         buttonlist[i].config(background='white')
@@ -55,11 +117,14 @@ def click1():
             remove+=1
             if remove >=6:
                 print("done")
-            buttonlist[0].config(background='white', state='disabled')
+
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+            buttonlist[0].config(background='gray', state='disabled')
             #buttonlist[0]["state"] = "disabled"
             #buttonlist[0].grid_remove()
             #buttonlist[0].pack(pady=10)
-            buttonlist[1].config(background='white', state='disabled')
+            buttonlist[1].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -85,9 +150,12 @@ def click2():
             if remove >=6:
                 print("done")
 
-            buttonlist[0].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[0].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[1].config(background='white', state='disabled')
+            buttonlist[1].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -114,9 +182,12 @@ def click3():
             if remove >=6:
                 print("done")
 
-            buttonlist[2].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[2].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[3].config(background='white', state='disabled')
+            buttonlist[3].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -142,9 +213,12 @@ def click4():
             if remove >=6:
                 print("done")
 
-            buttonlist[2].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[2].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[3].config(background='white', state='disabled')
+            buttonlist[3].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -169,9 +243,12 @@ def click5():
             if remove >=6:
                 print("done")
 
-            buttonlist[4].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[4].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[5].config(background='white', state='disabled')
+            buttonlist[5].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -196,9 +273,12 @@ def click6():
             if remove >=6:
                 print("done")
 
-            buttonlist[4].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[4].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[5].config(background='white', state='disabled')
+            buttonlist[5].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -223,9 +303,12 @@ def click7():
             if remove >=6:
                 print("done")
 
-            buttonlist[6].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[6].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[7].config(background='white', state='disabled')
+            buttonlist[7].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -250,9 +333,12 @@ def click8():
             if remove >=6:
                 print("done")
 
-            buttonlist[6].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[6].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[7].config(background='white', state='disabled')
+            buttonlist[7].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -277,9 +363,12 @@ def click9():
             if remove >=6:
                 print("done")
 
-            buttonlist[8].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[8].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[9].config(background='white', state='disabled')
+            buttonlist[9].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -304,9 +393,12 @@ def click10():
             if remove >=6:
                 print("done")
 
-            buttonlist[8].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[8].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[9].config(background='white', state='disabled')
+            buttonlist[9].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -331,9 +423,12 @@ def click11():
             if remove >=6:
                 print("done")
 
-            buttonlist[10].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[10].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[11].config(background='white', state='disabled')
+            buttonlist[11].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -358,9 +453,12 @@ def click12():
             if remove >=6:
                 print("done")
 
-            buttonlist[10].config(background='white', state='disabled')
+                finaltime=time.time()
+                print(finaltime-setfin, "TIME TAKEN")
+
+            buttonlist[10].config(background='gray', state='disabled')
             #buttonlist[0].pack(pady=10)
-            buttonlist[11].config(background='white', state='disabled')
+            buttonlist[11].config(background='gray', state='disabled')
             click=0
         else:
             click=0
@@ -368,150 +466,56 @@ def click12():
             backgroundReset()
 
 def match_creation(matchlist):
-    global blist, buttonlist
-
+    global buttonlist, ww, hh, setfin
+    setfin=0
+    set1=time.time()
     wordlist=[]
     for i in range(6):
         chosen=random.randint(0,len(matchlist)-1)
         while chosen in wordlist:
-            chosen=random.randint(0,len(matchlist))
+            chosen=random.randint(0,len(matchlist)-1)
             if len(matchlist) < 6:
                 break
         wordlist.append(chosen)
     mmm=[]
-    for i in range(len(wordlist)):
-        mmm.append(matchlist[wordlist[i]])
+    try:
+        for i in range(len(wordlist)):
+            mmm.append(matchlist[wordlist[i]])
+    except IndexError:
+        print("ERRRRRRRRRRROOOOOOOOOOOOOOOOORR__________________________________________________________________________________-----\n--------------------------------------------------------------")
+        print(len(wordlist))
+        print(wordlist)
+        print(matchlist)
+        print(i)
     win = tk.Tk()
-    win.geometry('1200x900')
+    screen_wid=win.winfo_screenwidth()
+    screen_height=win.winfo_screenheight()
+    ww=screen_wid//2
+    hh=screen_height-screen_height//5
+    win.geometry(f'{ww}x{hh}')
     win.columnconfigure((0,1,2,3),weight=3)
     win.rowconfigure((0,1,2), weight=1)
     frame = tk.Frame(win)
     frame.pack()
     buttonlist=[]
-    blist=[]
-    blist.append(mmm[0][0])
-    #pos=[[0,0],[0,1],[0,2],[0,3],[1,0],[1,1],[1,2],[1,3],[2,0],[2,1],[2,2],[2,3]]
+
     pos=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2],[3,0],[3,1],[3,2]]
 
-    random.shuffle(pos)
-    print(pos)
-    buttonlist.append(tk.Button(frame,
-                       height=10,
-                       width=30,
-                       text=mmm[0][0],
-                       fg="black",
-                       bg='white',
-                       command= click1))
-    buttonlist[0].grid(row=pos[0][0], column=pos[0][1])
-    blist.append(mmm[0][1])
-    buttonlist.append(tk.Button(frame,
-                   height=10,
-                   width=30,
-                   text=mmm[0][1],
-                   fg="black",
-                        bg='white',
-                   command=click2))
-    buttonlist[1].grid(row=pos[1][0], column=pos[1][1])
-    buttonlist.append(tk.Button(frame,
-                       height=10,
-                       width=30,
-                       text=mmm[1][0],
-                       fg="black",
-                        bg='white',
-                       command= click3))
-    buttonlist[2].grid(row=pos[2][0], column=pos[2][1])
-    blist.append(mmm[1][1])
-    buttonlist.append(tk.Button(frame,
-                   height=10,
-                   width=30,
-                   text=mmm[1][1],
-                   fg="black",
-                        bg='white',
-                   command=click4))
-    buttonlist[3].grid(row=pos[3][0], column=pos[3][1])
-    buttonlist.append(tk.Button(frame,
-                       height=10,
-                       width=30,
-                       text=mmm[2][0],
-                       fg="black",
-                        bg='white',
-                       command= click5))
-    buttonlist[4].grid(row=pos[4][0], column=pos[4][1])
-    blist.append(mmm[2][1])
-    buttonlist.append(tk.Button(frame,
-                   height=10,
-                   width=30,
-                   text=mmm[2][1],
-                   fg="black",
-                        bg='white',
-                   command=click6))
-    buttonlist[5].grid(row=pos[5][0], column=pos[5][1])
-    buttonlist.append(tk.Button(frame,
-                       height=10,
-                       width=30,
-                       text=mmm[3][0],
-                       fg="black",
-                        bg='white',
-                       command= click7))
-    buttonlist[6].grid(row=pos[6][0], column=pos[6][1])
-    blist.append(mmm[3][1])
-    buttonlist.append(tk.Button(frame,
-                   height=10,
-                   width=30,
-                   text=mmm[3][1],
-                   fg="black",
-                   bg='white',
-                   command=click8))
-    buttonlist[7].grid(row=pos[7][0], column=pos[7][1])
-    buttonlist.append(tk.Button(frame,
-                       height=10,
-                       width=30,
-                       text=mmm[4][0],
-                       fg="black",
-                       bg='white',
-                       command= click9))
-    buttonlist[8].grid(row=pos[8][0], column=pos[8][1])
-    blist.append(mmm[4][1])
-    buttonlist.append(tk.Button(frame,
-                   height=10,
-                   width=30,
-                   text=mmm[4][1],
-                   fg="black",
-                   bg='white',
-                   command=click10))
-    buttonlist[9].grid(row=pos[9][0], column=pos[9][1])
-    buttonlist.append(tk.Button(frame,
-                       height=10,
-                       width=30,
-                       text=mmm[5][0],
-                       fg="black",
-                       bg='white',
-                       command= click11))
-    buttonlist[10].grid(row=pos[10][0], column=pos[10][1])
-    blist.append(mmm[5][1])
-    buttonlist.append(tk.Button(frame,
-                   height=10,
-                   width=30,
-                   text=mmm[5][1],
-                   fg="black",
-                   bg='white',
-                   command=click12))
-    buttonlist[11].grid(row=pos[11][0], column=pos[11][1])
-    randomlist=[[0,0], [0,100],[0,200],[0,300]]
-    #for i in range(len(randomlist)):
-    #    buttonlist[i].place(x=randomlist[i][0], y=randomlist[i][1])
-    #    ba1=
-    #    bb=
-    #    bb1=
-    #    bc=
-    #    bc1=
-    #    bd=
-    #    bd1=
-    #    be=
-    #    be1=
-    #    bf=
-    #    bf1=
+    commandlist=[click1,click2,click3,click4,click5,click6,click7,click8,click9,click10,click11,click12]
 
+    random.shuffle(pos)
+    for i in range(6):
+        fontSIZE=fontConfig(mmm[i][0], ww//3-ww//15)
+        sfonts=tkFont.Font(size=fontSIZE)
+        buttonlist.append(rip(frame,  height=hh//4-hh//20,  width=ww//3-ww//15, font=sfonts,  text=mmm[i][0],  fg="black",  bg='white',  command=commandlist[i*2]))
+        buttonlist[i*2].grid(row=pos[i*2][0], column=pos[i*2][1])
+        fontSIZE=fontConfig(mmm[i][1], ww//3-ww//15)
+        sfonts=tkFont.Font(size=fontSIZE)
+
+        buttonlist.append(rip(frame, height=hh//4-hh//20,  width=ww//3-ww//15, font=sfonts, text=mmm[i][1], fg="black",   bg='white', command=commandlist[i*2+1]))
+        buttonlist[i*2+1].grid(row=pos[i*2+1][0], column=pos[i*2+1][1])
+    setfin=time.time()
+    print("setupd time", setfin-set1, "------------------------------------------------------\n---------------------------------------------")
     win.mainloop()
 
 
@@ -529,5 +533,3 @@ def matchinglist(list):
 
 if __name__ == "__main__":
     main()
-
-
