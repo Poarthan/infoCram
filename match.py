@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#/usr/bin/env python3
 
 
 import time
@@ -21,60 +21,27 @@ def main():
     remove=0
     allFalse()
     checklist=[var_match_1, var_match_2, var_match_3, var_match_4, var_match_5, var_match_6, var_match_7, var_match_8, var_match_9, var_match_10, var_match_11, var_match_12]
-    studylist="testlist.txt"
+    studylist="studylist.txt"
     mlist=matchinglist(studylist)
     setup2=time.time()
     print("time", setup2-start, "-------------------------------------------------------------------------\n-----------------------------------------------------------------")
     match_creation(mlist)
 
-def tmain():
-    studylist="testlist.txt"
-    mlist=matchinglist(studylist)
-    #for i in range(len(mlist)):
-    #final=fontConfig(mlist[0],30)
-    text=mlist[0]
-    blocksize=30
-    win = tk.Tk()
-    screen_wid=win.winfo_screenwidth()
-    screen_height=win.winfo_screenheight()
-    print(screen_wid, screen_height)
-    ww=screen_wid//4
-    hh=screen_height-screen_height//10
-    win.geometry(f'{ww}x{hh}')
-    win.columnconfigure((0,1,2,3),weight=3)
-    win.rowconfigure((0,1,2), weight=1)
-    frame = tk.Frame(win)
-    frame.pack()
-    buttonlist=[]
-    blist=[]
-    arial36b = tkFont.Font(family='Arial', size=36, weight='bold')
-    width = arial36b.measure("How wide is this?")
-    for i in range(500):
-        arial36b = tkFont.Font(family='Arial', size=i)
-        width = arial36b.measure(mlist[0][0])
-        if width <  ww//3-ww//15:
-            wordwidth=width
-            usedSize=i
-    print(wordwidth)
-    sfonts=tkFont.Font(size=usedSize)
+def fontConfig(text):
 
-    final=wordwidth
-    print(usedSize, final, mlist[0][0])
-    buttonlist=[]
-    buttonlist.append(rip(frame, font=sfonts, text=mlist[0][0],  fg="black",  bg='white',  command= click3,height = hh//4-hh/20,  width = ww//3-ww/15 ))
-    buttonlist[0].grid(row=2, column=2)
-    #blist.append()
+    print("spaces", text.count(' '))
+    print("UHHH", hh)
+    arial36b = tkFont.Font(family='Arial', size=hh//4)
+    width = arial36b.measure(text)
+    print("width:", width)
+    n=width//(ww//3)
+    print("n:", n)
+    print(text)
+    usedSize=hh//(n*2)
+    print("finalsize", usedSize)
+   # lineSize=ww//3-ww//14
 
-    win.mainloop()
-
-
-def fontConfig(text, blocksize):
-    n=340//len(text)
-    usedSize=n-20
-    if usedSize>100:
-        usedSize=100
-    print(usedSize, text, n)
-    return usedSize
+    return int(usedSize)
 
 def allFalse():
     global var_match_1, var_match_2, var_match_3, var_match_4, var_match_5, var_match_6, var_match_7, var_match_8, var_match_9, var_match_10, var_match_11, var_match_12
@@ -490,8 +457,10 @@ def match_creation(matchlist):
     win = tk.Tk()
     screen_wid=win.winfo_screenwidth()
     screen_height=win.winfo_screenheight()
+    print(screen_wid, screen_height)
     ww=screen_wid//2
     hh=screen_height-screen_height//5
+    print(ww, hh, "hello")
     win.geometry(f'{ww}x{hh}')
     win.columnconfigure((0,1,2,3),weight=3)
     win.rowconfigure((0,1,2), weight=1)
@@ -502,17 +471,24 @@ def match_creation(matchlist):
     pos=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2],[2,0],[2,1],[2,2],[3,0],[3,1],[3,2]]
 
     commandlist=[click1,click2,click3,click4,click5,click6,click7,click8,click9,click10,click11,click12]
+    #def fontConfig(text, blocksize):
+    #    n=340//len(text)
+    #    usedSize=n-20
+    #    if usedSize>100:
+    #        usedSize=100
+    #    print(usedSize, text, n)
+    #    return usedSize
 
     random.shuffle(pos)
     for i in range(6):
-        fontSIZE=fontConfig(mmm[i][0], ww//3-ww//15)
+        fontSIZE=fontConfig(mmm[i][0])
         sfonts=tkFont.Font(size=fontSIZE)
-        buttonlist.append(rip(frame,  height=hh//4-hh//20,  width=ww//3-ww//15, font=sfonts,  text=mmm[i][0],  fg="black",  bg='white',  command=commandlist[i*2]))
+        buttonlist.append(rip(frame,  height=hh//4-hh//20,  width=ww//3-ww//15, font=sfonts, wraplength=ww//3-ww//14,  text=mmm[i][0],  fg="black",  bg='white',  command=commandlist[i*2]))
         buttonlist[i*2].grid(row=pos[i*2][0], column=pos[i*2][1])
-        fontSIZE=fontConfig(mmm[i][1], ww//3-ww//15)
+        fontSIZE=fontConfig(mmm[i][1])
         sfonts=tkFont.Font(size=fontSIZE)
 
-        buttonlist.append(rip(frame, height=hh//4-hh//20,  width=ww//3-ww//15, font=sfonts, text=mmm[i][1], fg="black",   bg='white', command=commandlist[i*2+1]))
+        buttonlist.append(rip(frame, height=hh//4-hh//20,  width=ww//3-ww//15, font=sfonts, wraplength=ww//3-ww//14, text=mmm[i][1], fg="black",   bg='white', command=commandlist[i*2+1]))
         buttonlist[i*2+1].grid(row=pos[i*2+1][0], column=pos[i*2+1][1])
     setfin=time.time()
     print("setupd time", setfin-set1, "------------------------------------------------------\n---------------------------------------------")
@@ -528,7 +504,7 @@ def matchinglist(list):
     for stuff in lines:
         things=stuff.split(matchsplitchar)
         newlines.append(things)
-    print(newlines)
+    #print(newlines)
     return newlines #, unusual
 
 if __name__ == "__main__":
