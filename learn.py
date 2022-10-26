@@ -4,12 +4,10 @@ import time
 import random
 
 def main():
- slist="studylist.txt"
- tolearn=matchinglist(slist)
  speed=1
  klevel=0
  try:
-  speed=int(input("What speed do you want to learn? (0) Fast (1) Slow:"))
+  speed=int(input("What speed do you want to learn? (0) Slow (1) Fast:"))
  except ValueError:
   print("bad input, default speed is slow")
  try:
@@ -19,8 +17,12 @@ def main():
  if klevel >= 3:
   print("testing")
   full_test(tolearn)
- result=learn(tolearn, speed, klevel)
- klevelcal=knowledgecalc(result)
+ else:
+  slist="studylist.mem"
+  matchsplchar="!!!!!"
+  tolearn, progress_list=matchinglist(slist, matchsplchar, klevel)
+  result=learn(tolearn, speed, klevel)
+  klevelcal=knowledgecalc(result)
 
 def learn(learnlist, speed, klevel):
  print("oof", speed)
@@ -37,13 +39,33 @@ def learn(learnlist, speed, klevel):
   setquestion=0
   setcoef=7
  success, question_num=question1mcq(learnlist, learnlist, True)
+ success, question_num, difficulty=question2write(learnlist, True)
  rounds=1
  learnlist,otherstore=listconfig(success, question_num, qtype)
  knowledgecalc(result, rounds, speed, klevel)
 
-def listconfig(success, question_num, qtype):
- print("stores learning results")
-
+def listconfig(success, question_num, qtype, matchsplitchar, testlist):
+ if success==True:
+  if qtype==3:
+   level=3
+  elif qtype==2:
+   level=3
+  elif qtype==1:
+   level=1
+  elif qtype==0:
+   level=1
+ else:
+  if qtype==3:
+   level=-1
+  elif qtype==2:
+   level=-1
+  elif qtype==1:
+   level=-3
+  elif qtype==0:
+   level=-3
+ prev_quests=testlist[question_num][2].append(qtype)
+ knowledgescore=testlist[question_num][3]+level
+ 
 def knowledgecalc(result, rounds, speed, klevel):
  print(result, rounds, speed, klevel)
 
@@ -53,17 +75,20 @@ def question1mcq(testlist, matchlist, withrandom):
  question=testlist[rand_q][0]
  rand_a=random.randint(0,3)
  random_answer1=rand_q
- while random_answer1==rand_q:
-  rand_answer1=random.randint(0,x+y-2)
- while random_answer2==rand_q or random_answer2==random_answer1:
-  rand_answer2=random.randint(0,x+y-2)
- while random_answer3==rand_q or random_answer3==random_answer1 or random_answer3==random_answer2:
-  rand_answer3=random.randint(0,x+y-2)
- print(question)
  rand_ans=testlist[rand_q][1]
- random_answer1=matchlist(random_answer1[1])
- random_answer2=matchlist(random_answer2[1])
- random_answer2=matchlist(random_answer3[1])
+ random_answer1=rand_ans
+ while random_answer1==rand_ans:
+  random_answer1=matchlist[ random.randint(0,len(matchlist)-1)][1]
+ random_answer2=rand_ans
+ while random_answer2==rand_ans or random_answer2==random_answer1:
+  random_answer2=matchlist[random.randint(0,len(matchlist)-1)][1]
+ random_answer3=rand_ans
+ while random_answer3==rand_ans or random_answer3==random_answer1 or random_answer3==random_answer2:
+  random_answer3=matchlist[random.randint(0,len(matchlist)-1)][1]
+ print(question)
+ # random_answer1=matchlist(random_answer1[1])
+ # random_answer2=matchlist(random_answer2[1])
+ # random_answer2=matchlist(random_answer3[1])
  if rand_a==0:
   print("(a)", rand_ans)
   print("(b)", random_answer1)
@@ -76,24 +101,24 @@ def question1mcq(testlist, matchlist, withrandom):
   print("(d)", random_answer3)
  elif rand_a==2:
   print("(a)", random_answer1)
-  print("(b)", rand_ans)
-  print("(c)", random_answer2)
+  print("(b)", random_answer2)
+  print("(c)", rand_ans)
   print("(d)", random_answer3)
  elif rand_a==3:
   print("(a)", random_answer1)
-  print("(b)", rand_ans)
-  print("(c)", random_answer2)
-  print("(d)", random_answer3)
+  print("(b)", random_answer2)
+  print("(c)", random_answer3)
+  print("(d)", rand_ans)
  user_answer=input("Answer:")
  print("Your answer:", user_answer)
  if user_answer=="a":
-  user_answer=1
+  user_answer=0
  if user_answer=="b":
-  user_answer=2
+  user_answer=1
  if user_answer=="c":
-  user_answer=3
+  user_answer=2
  if user_answer=="d":
-  user_answer=4
+  user_answer=3
  if user_answer==rand_a:
   print("Correct!")
   print(rand_ans)
@@ -106,20 +131,41 @@ def question1mcq(testlist, matchlist, withrandom):
 def question2write(testlist, withrandom):
  y=len(testlist)
  rand_q=random.randint(0,y-1)
- question=testlist(rand_q[0])
- rand_ans=testlist(rand_q[1])
+ question=testlist[rand_q][0]
+ rand_ans=testlist[rand_q][1]
  print(question)
  user_answer=input("Answer:")
  print("Your answer:", user_answer)
  if user_answer==rand_ans:
   print("Correct!")
-  print(rand_a)
-  return True, rand_q
+  print(rand_ans)
+  user_level=input("How hard was that to recall, (1, easy-5, very hard), or actually I was INCORRECT(n):")
+  if user_level.isdigit():
+   user_level=int(user_level)
+   if user_level>0 and user_level<=5:
+    return True, rand_q, user_level
+   else:
+    return True, rand_q, 5
+  elif isinstance(user_level, str):
+   if user_level=="n":
+    print("INCORRECT ")
+    return False, rand_q, 0
+  else:
+   return True, rand_q, 5
  else:
-  print("INCORRECT  :(")
-  print(rand_a)
-  return False, rand_q
-
+  print("INCORRECT ")
+  print(rand_ans)
+  user_level=input("Overide I was correct, rate how easy it was to recall(1, easy-5, very hard), else just enter:")
+  if user_level.isdigit():
+   user_level=int(user_level)
+   if user_level>0 and user_level<=5:
+    print("Correct!")
+    return True, rand_q, user_level
+   else:
+    return False, rand_q, 0
+  else:
+   return False, rand_q , 0
+   
 def question3NOTNOW(knowlist, testlist, matchlist, withrandom):
  x=len(testlist)
  y=len(unknownlist)
@@ -188,17 +234,21 @@ def question(qtype):
 def knowledgecalc(results):
  print("knowledge level calaculation")
 
-def matchinglist(slist):
+def matchinglist(slist, matchsplitchar, defaultlevel):
  newlines=[]
- matchsplitchar="!!!!!"
  with open(f'{slist}') as file:
   lines = [line.rstrip() for line in file]
 
  for stuff in lines:
   things=stuff.split(matchsplitchar)
   newlines.append(things)
+ progresslist=newlines
+ for i in range(len(progresslist)):
+  progresslist[i].append([])
+  progresslist[i].append(defaultlevel)
  #print(newlines)
- return newlines #, unusual
+ #print(progresslist)
+ return newlines, progresslist
 
 def full_test(testlist):
  question_list=testlist
