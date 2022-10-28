@@ -4,7 +4,7 @@ import time
 import random
 
 def main():
- speed=1
+ global last5list, nottested, type0list, type1list, type2list, type3list
  klevel=0
  try:
   speed=int(input("What speed do you want to learn? (0) Slow (1) Fast:"))
@@ -20,31 +20,41 @@ def main():
  else:
   slist="studylist.mem"
   matchsplchar="!!!!!"
-  tolearn, progress_list=matchinglist(slist, matchsplchar, klevel)
-  result=learn(tolearn, speed, klevel)
-  klevelcal=knowledgecalc(result)
+  tolearn, progress_list=matchinglist(slist, matchsplchar, speed+klevel)
+  result=learn(speed, klevel)
+  rounds=1
+  startlist=range(0,255)
+  if result == 1:
+   success, question_num=question1mcq(startlist, tolearn, True)
+   difficulty=3
+  elif result ==2:
+   success, question_num, difficulty=question2write(startlist, tolearn, True)
+  progress_list=listconfig(success, question_num, result, progress_list)
+  last5list=[]
+  nottested=[]
+  type0list=[]
+  type1list=[]
+  type2list=[]
+  type3list=[]
+  done=False
+  while done == False:
+   test_list, done, result=knowledgecalc(question_num, progress_list, rounds)
+   if result == 1:
+    success, question_num=question1mcq(test_list, tolearn, True)
+    difficulty=3
+   elif result ==2:
+    success, question_num, difficulty=question2write(test_list, tolearn, True)
+   progress_list=listconfig(success, question_num, result, progress_list)
+   rounds+=1
 
-def learn(learnlist, speed, klevel):
- print("oof", speed)
- if klevel > 2.9:
-  setquestion=4
-  setcoef=1
- elif klevel > 1.9:
-  setquestion=2
-  setcoef=1
- elif klevel > 0:
-  setquestion=3
-  setcoef=2
- elif klevel==0:
-  setquestion=0
-  setcoef=7
- success, question_num=question1mcq(learnlist, learnlist, True)
- success, question_num, difficulty=question2write(learnlist, True)
- rounds=1
- learnlist,otherstore=listconfig(success, question_num, qtype)
- knowledgecalc(result, rounds, speed, klevel)
-
-def listconfig(success, question_num, qtype, matchsplitchar, testlist):
+def learn(speed, klevel):
+ coef=klevel+speed
+ if coef >= 2:
+  return 2
+ else:
+  return 1
+ 
+def listconfig(success, question_num, qtype, testlist):
  if success==True:
   if qtype==3:
    level=3
@@ -64,18 +74,86 @@ def listconfig(success, question_num, qtype, matchsplitchar, testlist):
   elif qtype==0:
    level=-3
  prev_quests=testlist[question_num][2].append(qtype)
- knowledgescore=testlist[question_num][3]+level
+ if testlist[question_num][3]:
+  testlist[question_num][3]=testlist[question_num][3]+level
+ else:
+  testlist[question_num][3]=level
+ return testlist
+
+def knowledgecalc(question_num, progress_list, rounds):
+ print(question_num, progress_list, rounds)
+ global last5list, nottested, type0list, type1list, type2list, type3list 
+ mastered=6
+ for i in range(len(progress_list)):
+  try:
+   if progress_list[i][3] > mastered:
+    nottested.append(i)
+   elif progress_list[i][3] >= 4:
+    type3list.append(i)
+   elif progress_list[i][3] >= 1:
+    type2list.append(i)
+   elif progress_list[i][3] >= -1:
+    type1list.append(i)
+   else:
+    type0list.append(i)
+  except:
+   print(i)
+ nottested=list(set(nottested))
+ type0list=list(set(type0list))
+ type1list=list(set(type1list))
+ type2list=list(set(type2list))
+ type3list=list(set(type3list))
+ c1=-1 #type0list
+ c2=0.5 #type1list
+ c3=4 #type2or3 probably need to split apart these coefficients
+ c4=-1 #not tested
+ qtype=(len(type0list)*c1+len(type1list)*c2+(len(type2list)+len(type3list))*c3)/rounds+(c4*len(nottested))/len(progress_list)
+ if qtype < -1:
+  qtype=0
+  testlist=type0list
+ elif qtype < 1:
+  qtype=1
+  testlist=type1list
+ elif qtype < 4:
+  qtype=2
+  testlist=type2list
+ else:
+  qtype=3
+  testlist=type3list
+ last5list.append(question_num)
+ if len(last5list)>5:
+  last5list.pop(0)
+ all_mastered=True
+ for i in range(len(progress_list)):
+  try:
+   if progress_list[i][3] < 5:
+    all_mastered=False
+    break
+  except:
+   print(i)
+ if all_mastered:
+  total_score=0
+  for i in range(len(progress_list)):
+   try:
+    total_score+=progress_list[i][3]
+   except:
+    print(i)
+  if total_score>6.5*len(progress_list):
+   finished = True
+  else:
+   finished=False
+ else:
+  finished=False
  
-def knowledgecalc(result, rounds, speed, klevel):
- print(result, rounds, speed, klevel)
+ return testlist, finished, qtype
 
 def question1mcq(testlist, matchlist, withrandom):
  y=len(testlist)
  rand_q=random.randint(0,y-1)
- question=testlist[rand_q][0]
+ question=matchlist[testlist[rand_q]][0]
  rand_a=random.randint(0,3)
- random_answer1=rand_q
- rand_ans=testlist[rand_q][1]
+ random_answer1=testlist[rand_q]
+ rand_ans=matchlist[testlist[rand_q]][1]
  random_answer1=rand_ans
  while random_answer1==rand_ans:
   random_answer1=matchlist[ random.randint(0,len(matchlist)-1)][1]
@@ -128,11 +206,11 @@ def question1mcq(testlist, matchlist, withrandom):
   print(rand_ans)
   return False, rand_q
 
-def question2write(testlist, withrandom):
+def question2write(testlist, matchlist, withrandom):
  y=len(testlist)
  rand_q=random.randint(0,y-1)
- question=testlist[rand_q][0]
- rand_ans=testlist[rand_q][1]
+ question=matchlist[testlist[rand_q]][0]
+ rand_ans=matchlist[testlist[rand_q]][1]
  print(question)
  user_answer=input("Answer:")
  print("Your answer:", user_answer)
@@ -143,15 +221,15 @@ def question2write(testlist, withrandom):
   if user_level.isdigit():
    user_level=int(user_level)
    if user_level>0 and user_level<=5:
-    return True, rand_q, user_level
+    return True, testlist[rand_q], user_level
    else:
-    return True, rand_q, 5
+    return True, testlist[rand_q], 5
   elif isinstance(user_level, str):
    if user_level=="n":
     print("INCORRECT ")
-    return False, rand_q, 0
+    return False, testlist[rand_q], 0
   else:
-   return True, rand_q, 5
+   return True, testlist[rand_q], 5
  else:
   print("INCORRECT ")
   print(rand_ans)
@@ -160,11 +238,11 @@ def question2write(testlist, withrandom):
    user_level=int(user_level)
    if user_level>0 and user_level<=5:
     print("Correct!")
-    return True, rand_q, user_level
+    return True, testlist[rand_q], user_level
    else:
-    return False, rand_q, 0
+    return False, testlist[rand_q], 0
   else:
-   return False, rand_q , 0
+   return False, testlist[rand_q] , 0
    
 def question3NOTNOW(knowlist, testlist, matchlist, withrandom):
  x=len(testlist)
@@ -230,9 +308,6 @@ def question(qtype):
   print("test2")
  elif qtype==3:
   print("test3")
-  
-def knowledgecalc(results):
- print("knowledge level calaculation")
 
 def matchinglist(slist, matchsplitchar, defaultlevel):
  newlines=[]
