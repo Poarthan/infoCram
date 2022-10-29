@@ -20,7 +20,8 @@ def main():
  else:
   slist="studylist.mem"
   matchsplchar="!!!!!"
-  tolearn, progress_list=matchinglist(slist, matchsplchar, speed+klevel)
+  linesplchar="###"
+  tolearn, progress_list=matchinglist(slist, matchsplchar, linesplchar, speed+klevel)
   result=learn(speed, klevel)
   rounds=1
   startlist=range(0,255)
@@ -70,9 +71,9 @@ def listconfig(success, question_num, qtype, testlist):
   elif qtype==2:
    level=-1
   elif qtype==1:
-   level=-3
+   level=-2
   elif qtype==0:
-   level=-3
+   level=-2
  prev_quests=testlist[question_num][2].append(qtype)
  if testlist[question_num][3]:
   testlist[question_num][3]=testlist[question_num][3]+level
@@ -83,6 +84,9 @@ def listconfig(success, question_num, qtype, testlist):
 def knowledgecalc(question_num, progress_list, rounds):
  print(question_num, progress_list, rounds)
  global last5list, nottested, type0list, type1list, type2list, type3list 
+ last5list.append(question_num)
+ if len(last5list)>5:
+  last5list.pop(0)
  mastered=6
  for i in range(len(progress_list)):
   try:
@@ -104,11 +108,12 @@ def knowledgecalc(question_num, progress_list, rounds):
  type2list=list(set(type2list))
  type3list=list(set(type3list))
  c1=-1 #type0list
- c2=0.5 #type1list
- c3=4 #type2or3 probably need to split apart these coefficients
+ c2=-0.05 #type1list
+ c3=3 #type2or3 probably need to split apart these coefficients
  c4=-1 #not tested
  qtype=(len(type0list)*c1+len(type1list)*c2+(len(type2list)+len(type3list))*c3)/rounds+(c4*len(nottested))/len(progress_list)
- if qtype < -1:
+ print("QTYPE:", qtype )
+ if qtype < -2:
   qtype=0
   testlist=type0list
  elif qtype < 1:
@@ -120,9 +125,6 @@ def knowledgecalc(question_num, progress_list, rounds):
  else:
   qtype=3
   testlist=type3list
- last5list.append(question_num)
- if len(last5list)>5:
-  last5list.pop(0)
  all_mastered=True
  for i in range(len(progress_list)):
   try:
@@ -309,11 +311,14 @@ def question(qtype):
  elif qtype==3:
   print("test3")
 
-def matchinglist(slist, matchsplitchar, defaultlevel):
+def matchinglist(slist, matchsplitchar, linesplitchar, defaultlevel):
  newlines=[]
- with open(f'{slist}') as file:
-  lines = [line.rstrip() for line in file]
-
+ # with open(f'{slist}') as file:
+  # lines = [line.rstrip() for line in file]
+ with open(f'{slist}', 'r') as file:
+  data = file.read()
+ lines=data.split(linesplitchar)
+ print(lines)
  for stuff in lines:
   things=stuff.split(matchsplitchar)
   newlines.append(things)
@@ -321,7 +326,7 @@ def matchinglist(slist, matchsplitchar, defaultlevel):
  for i in range(len(progresslist)):
   progresslist[i].append([])
   progresslist[i].append(defaultlevel)
- #print(newlines)
+ print(newlines)
  #print(progresslist)
  return newlines, progresslist
 
