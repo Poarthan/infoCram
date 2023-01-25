@@ -17,7 +17,7 @@ python3 match.py
 ```
 
 ## Learn
-More important is learn, which is a good way to quickly memorise a bunch of things.
+More important is learn, which is a good way to quickly memorise a bunch of things. The algorithm for this is a bit basic, will try to improve later on, but I like the typing to answer format that quizlet requires compared to other learning software just using flashcards. With quizlet's recent paywalls this project has become slightly more useful.
 
 To run just do:
 ```
